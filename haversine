@@ -1,0 +1,82 @@
+%sql  
+
+ALTER TABLE sedwa8.member_distance_master SET TBLPROPERTIES ('recordservice.spark.client-bypass'='true' );
+
+INSERT OVERWRITE TABLE sedwa8.member_distance_master
+
+
+        SELECT 
+        Member_ID,
+        MAX(CASE WHEN Distance_Rank = 1 and store_type = 'NFS' then Nearest_Store_Distance ELSE NULL END) as Nearest_NFS_Distance, 
+        MAX(CASE WHEN Distance_Rank = 1 and store_type = 'NFS' then store_nbr_name ELSE NULL END) as Nearest_NFS_Store,
+        MAX(CASE WHEN Distance_Rank = 1 and store_type = 'NSO' then Nearest_Store_Distance ELSE NULL END) as Nearest_NSO_Distance,
+        MAX(CASE WHEN Distance_Rank = 1 and store_type = 'NSO' then store_nbr_name ELSE NULL END) as Nearest_NSO_Store,
+        MIN(Nearest_Store_Distance) as Nearest_Store_Distance,
+        ntile(10) over (order by MIN(Nearest_Store_Distance) asc) as Decile,
+        is_active_fy19
+
+        FROM 
+              (
+                SELECT
+                DISTINCT a.MEMBER_ID,
+                store_type,
+                store_nbr_name,
+                Nearest_Store_Distance,
+                RANK() OVER (PARTITION BY store_type, a.member_id ORDER BY Nearest_Store_Distance ASC) as Distance_Rank,
+                CASE WHEN jp.member_id IS NOT NULL THEN 1 ELSE 0 END as is_active_fy19
+                
+                FROM 
+                      (
+                          /*FOR EACH MEMBER THAT HAS A ZIP CODE LAT & LONG*/
+                            SELECT DISTINCT MEMBER_ID,
+                            CAST(geo.LAT as float) as member_lat,
+                            CAST(geo.LNG as float) as member_long,
+                            s.store_nbr_name,
+                            s.store_type,
+                            s.store_lat,
+                            s.store_long,
+                            2 * 3961 * asin(sqrt( power((sin(radians((s.store_lat - CAST(geo.lat as float)) / 2))) , 2) + cos(radians(CAST(geo.lat as float))) * cos(radians(s.store_lat)) * power((sin(radians((s.store_long - CAST(geo.lng as float)) / 2))) , 2) )) as Nearest_Store_Distance
+
+                            FROM member.member_xref xref
+                            INNER JOIN sedwa8.zip_lat_long geo --joining in the table we created of the center of every zip code. We then join it to the member's zip to get the approx. member lat/long
+                            on geo.Convert_zip = xref.MEMLOC_V2_POSTAL_CODE
+
+                            CROSS JOIN   --gives us every combination of table A and table B
+                                   ( 
+                                      SELECT
+                                      DISTINCT concat(str_id_pad,concat(' - ',str_nm)) as store_nbr_name,
+                                      str_channel_rollup as store_type,
+                                      cast(str_lat as float) as store_lat,
+                                      cast(str_long as float) as store_long
+
+                                      FROM dtc_integrated.dtc_bm_order_line  bmol
+
+                                      WHERE 
+                                      bmol.str_lat is not null
+                                      and bmol.str_long is not null
+                                      and TO_DATE(bmol.trans_end_dttm) >= '2019-06-01' --lets get only stores open in 2019
+                                      and str_id_pad not in ('0109','0224','0324') --what is this? Employee? 0324 is SNKRS ATL
+                                      and bmol.str_region_cd='NA'
+                                      and str_channel_rollup in ('NSO','NFS')
+
+                                      GROUP BY 1,2,3,4
+                                      HAVING sum(gross_amt_usd) >1000 --only give us stores with sales to further prevent noise from entering the data
+                                   )  s   
+
+                            WHERE MEMLOC_V2_FLAG_HAS_POSTAL_CODE = 1
+                            and preferred_geography in ('North America')
+                            --and member_id in ('674044b3310fb70a5f060be597e6fec6','0000312cd7f75e0d9e1b59017e688ac8','0000dce7e54f81234717b1ce8f6e4ad4') --For QA against previous cell
+
+                      ) a
+                LEFT JOIN jponzi.member_interactions_ltd_20190326 jp
+                on jp.member_id = a.member_id
+                
+                WHERE 
+                TO_DATE(jp.session_start_dt) between '2018-06-03' and '2019-06-01'
+                
+                GROUP BY 1,2,3,4,6
+              )
+
+        WHERE Distance_Rank = 1
+        GROUP BY 1,8
+
