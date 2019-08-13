@@ -1,0 +1,89 @@
+select distinct coalesce(doris_member_id,ropis_member_id,naar_member_id,assist_member_id,bopis_member_id) as member_id,
+case when doris_member_id is not null then 1 else 0 end as doris_member_fl,
+case when ropis_member_id is not null then 1 else 0 end as ropis_member_fl,
+case when naar_member_id is not null then 1 else 0 end as naar_member_fl,
+case when assist_member_id is not null then 1 else 0 end as assist_member_fl,
+case when bopis_member_id is not null then 1 else 0 end as bopis_member_fl
+
+FROM 
+            (select d.member_id as doris_member_id,
+              r.member_id as ropis_member_id,
+              naar.member_id as naar_member_id,
+              da.member_id as assist_member_id,
+              b.member_id as bopis_member_id
+
+              from (select distinct member_id                                   --doris
+                    from dtc_integrated.dtc_digital_order_line dol
+                    inner join
+                              (                                                           
+                              select order_line_key,
+                                Total_quantity  as returned_in_store_q
+                              from DOM.YFS_ORDER_RELEASE_STATUS
+                              where to_date(status_date) >= date_sub(current_date, 120)   
+                              and STATUS in ('3700.04')                                   
+                              group by 1,2
+                              having COUNT(*) = 1
+                              ) ors 
+                     on dol.order_line_key = ors.order_line_key
+                     where to_date(dol.order_dt) >= date_sub(current_date, 90)                   
+                      and dol.REC_EXCL_IND = 0
+                      and dol.ORIGL_ORDERED_QTY > 0
+                      and dol.region_CD in ('US')
+                     ) d
+              full outer join (select dol.member_id                               --ropis
+                                from dtc_integrated.dtc_digital_order_line dol
+                                inner join dtc_integrated.services_reserve_integrated r
+                                on dol.order_line_key = r.order_line_key 
+                                where to_date(order_dt) >= date_sub(current_date, 90)
+                                and dol.region_cd in ('US')
+                              ) r
+              on d.member_id = r.member_id
+
+              full outer join (select distinct member_id                         --na@r
+                                from dtc_integrated.services_ma_sales_integrated naar
+                                inner join dtc_reference.commerce_mapping m on naar.commerce_id = m.commerce_id
+                                inner join (select distinct member_id
+                                            ,source_id
+                                            ,preferred_geography
+                                            from member.member_xref mx 
+                                            where member_indicator = 'member'
+                                            and is_user_email_only = 'false'
+                                            and source_cd in ('profile','commerce')
+                                            and lower(is_user_converse) != 'true'
+                                            and email_addr is not null
+                                            and source_id is not null
+                                            ) mx 
+                                            on lower(m.buyer_user_id) = lower(mx.source_id)
+                                where naar.event_date = '2018-07-14'
+                                and upper(preferred_geography) = 'NORTH AMERICA'
+                                and naar.commerce_id is not null 
+                                and naar.commerce_id != ''
+                                ) naar
+              on d.member_id = naar.member_id
+              or r.member_id = naar.member_id
+
+              full outer join (select distinct member_id                     --digital assist
+                                from dtc_integrated.dtc_digital_order_line 
+                                where seamless_ind = 1
+                                and to_date(order_dt) >= date_sub(current_date, 90)  
+                                and region_cd in ('US')
+                              ) da
+              on d.member_id = da.member_id
+              --or naar.member_id = da.member_id
+              --or r.member_id = da.member_id
+
+              full outer join (select distinct member_id                     --bopis 
+                                from dtc_integrated.dtc_digital_order_line 
+                                where bopis_ind = 1
+                                and to_date(order_dt) >= '2019-05-01' 
+                                and region_cd in ('US')               
+                              ) b
+              on d.member_id = b.member_id
+            )
+--where doris_member_id in ('9a87647754848402d7088c1e7af1f5e8') or ropis_member_id in ('9a87647754848402d7088c1e7af1f5e8') or naar_member_id in ('9a87647754848402d7088c1e7af1f5e8') or assist_member_id in ('9a87647754848402d7088c1e7af1f5e8') or bopis_member_id in ('9a87647754848402d7088c1e7af1f5e8')
+--for QA ^^
+/*where doris_member_id is not null
+--and ropis_member_id is not null
+--and bopis_member_id is not null
+and assist_member_id is not null
+and naar_member_id is not null*/
