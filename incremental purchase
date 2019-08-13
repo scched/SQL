@@ -1,0 +1,355 @@
+SELECT 
+      'NFS' as Store_Type
+      ,COUNT(DISTINCT BM_Trans_ID) as Txn_Count
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND univ_style_cd = Style THEN BM_TRANS_ID ELSE NULL END) as SameStyle_Exchanges
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND univ_style_cd = Style THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as Exchange_Rate
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND univ_style_cd = Style THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT Return_InStore_Time),3) as Exchange_Rate_D
+      
+        ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'FOOTWEAR' AND UPPER(Division) = 'FOOTWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) FTWforFTW_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'FOOTWEAR' AND UPPER(Division) = 'FOOTWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) =              'FOOTWEAR' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as FTWforFTW_Exchange_Rate
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'FOOTWEAR' AND UPPER(Division) = 'FOOTWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) =              'FOOTWEAR' and DORIS_Demand > 0 THEN Return_InStore_Time ELSE NULL END),3) as FTWforFTW_Exchange_Rate_D
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'APPAREL' AND UPPER(univ_div_desc) = 'APPAREL' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) APPforAPP_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'APPAREL' AND UPPER(univ_div_desc) = 'APPAREL' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) =                    'APPAREL' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as APPforAPP_Exchange_Rate
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'APPAREL' AND UPPER(univ_div_desc) = 'APPAREL' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) =                    'APPAREL' and DORIS_Demand > 0 THEN Return_InStore_Time ELSE NULL END),3) as APPforAPP_Exchange_Rate_D
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'EQUIPMENT' AND UPPER(univ_div_desc) = 'EQUIPMENT' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) EQPforEQP_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'EQUIPMENT' AND UPPER(univ_div_desc) = 'EQUIPMENT' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) =                'EQUIPMENT' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as EQPforEQP_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND UPPER(LOB_Desc) = 'CLEARANCE' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) CLEARforCLEAR_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND UPPER(LOB_Desc) = 'CLEARANCE' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                               UPPER(Line_of_business) = 'CLEARANCE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as CLEARforCLEAR_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND UPPER(LOB_Desc) = 'PROMOTION' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) CLEARforPROMO_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND UPPER(LOB_Desc) = 'PROMOTION' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                               UPPER(Line_of_business) = 'CLEARANCE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as CLEARforPROMO_Exchange_Rate
+
+       ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND (UPPER(LOB_Desc) = 'PROMOTION' OR UPPER(LOB_Desc) = 'CLEARANCE') and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) CLEARforDISCOUNT_Txn_Cnt
+       ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND (UPPER(LOB_Desc) = 'PROMOTION' OR UPPER(LOB_Desc) = 'CLEARANCE')  and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN                             Purchase_After_DORIS_Fl = 1 AND  UPPER(Line_of_business) = 'CLEARANCE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as CLEARforDISCOUNT_Exchange_Rate
+
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' AND UPPER(LOB_Desc) = 'BASE INLINE' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) BASEforBASE_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' AND UPPER(LOB_Desc) = 'BASE INLINE' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                            UPPER(Line_of_business) = 'BASE INLINE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as BASEforBASE_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' AND (UPPER(LOB_Desc) = 'PROMOTION' OR UPPER(LOB_Desc) = 'CLEARANCE') and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) BASEforDISCOUNT_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' AND (UPPER(LOB_Desc) = 'PROMOTION' OR UPPER(LOB_Desc) = 'CLEARANCE') and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN                          Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as BASEforDISCOUNT_Exchange_Rate
+      
+       ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'LAUNCH' AND UPPER(LOB_Desc) = 'LAUNCH' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) LNCHforLNCH_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'LAUNCH' AND UPPER(LOB_Desc) = 'LAUNCH' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                                     UPPER(Line_of_business) = 'LAUNCH' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as LNCHforLNCH_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'SPORTSWEAR' AND UPPER(univ_cat_desc) = 'SPORTSWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) NSWforNSW_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'SPORTSWEAR' AND UPPER(univ_cat_desc) = 'SPORTSWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                                UPPER(Category) = 'SPORTSWEAR' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as NSWforNSW_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'RUNNING' AND UPPER(univ_cat_desc) = 'RUNNING' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) RNGforRNG_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'RUNNING' AND UPPER(univ_cat_desc) = 'RUNNING' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                                      UPPER(Category) = 'RUNNING' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as RNGforRNG_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'BASKETBALL' AND UPPER(univ_cat_desc) = 'BASKETBALL' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) BBALLforBBALL_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'BASKETBALL' AND UPPER(univ_cat_desc) = 'BASKETBALL' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                                UPPER(Category) = 'BASKETBALL' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as BBALLforBBALL_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'GLOBAL FOOTBALL' AND UPPER(univ_cat_desc) = 'GLOBAL FOOTBALL' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) GFBforGFB_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'GLOBAL FOOTBALL' AND UPPER(univ_cat_desc) = 'GLOBAL FOOTBALL' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                      UPPER(Category) = 'GLOBAL FOOTBALL' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as GFBforGFB_Exchange_Rate
+      
+     ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'FOOTWEAR' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_FTW
+       ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'APPAREL' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_APP
+        ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'EQUIPMENT' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_EQP
+        
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(LOB_Desc) = 'BASE INLINE' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_BASE
+       ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(LOB_Desc) = 'CLEARANCE' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_CLEAR
+        ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(LOB_Desc) = 'LAUNCH' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_LNCH
+         ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(LOB_Desc) = 'PROMOTION' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_PROMO
+        
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(univ_cat_desc) = 'SPORTSWEAR' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_NSW
+       ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(univ_cat_desc) = 'BASKETBALL' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_BBALL
+        ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(univ_cat_desc) = 'RUNNING' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_RNG
+         ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(univ_cat_desc) = 'GLOBAL FOOTBALL' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_GFB
+      
+      FROM (
+
+            SELECT DISTINCT bmol.trans_id as BM_Trans_ID,
+            bmol.trans_end_dttm as BM_Transaction_date,
+            bmol.univ_style_cd,
+            bmol.univ_div_desc,
+            bmol.univ_cat_desc,
+            bmol.lob_desc,
+            bmol.str_channel_rollup,
+            doris.Return_InStore_Time,
+            doris.Order_line_key,
+            doris.DORIS_demand,
+            doris.DORIS_units,
+            doris.Style,
+            doris.Gender,
+            doris.Division,
+            doris.Category,
+            doris.Line_of_business,
+            bmol.commerce_id,
+            xref.member_id,
+            doris.member_id,
+            '1' as Doris_fl,
+            ROUND(SUM(bmol.GROSS_AMT_USD),2) as Purchase_After_DORIS_Demand,
+            SUM(bmol.GROSS_UNITS) as Purchase_After_DORIS_Units,
+            CASE WHEN (TO_DATE(bmol.trans_dt) = TO_DATE(doris.Return_InStore_Time) AND (HOUR(bmol.trans_end_dttm) - HOUR(doris.Return_InStore_Time)) <= 2 OR ((DATEDIFF(doris.Return_InStore_Time,bmol.trans_dt) = 1) AND HOUR(doris.Return_InStore_Time) <=8)) THEN 1 ELSE 0 END as Purchase_After_DORIS_Fl
+            /* ^Give me a '1' when there is a bmol non-return transaction on the same day within 2 hours after the DORIS timestamp or before the next day's open time to account for the DOMS timestamp lag that appears to be consistently a few hours behind (evidenced by timestamps coming in after hours, i.e. 1am */ 
+
+            FROM dtc_integrated.DTC_BM_ORDER_LINE bmol
+
+            INNER JOIN dtc_reference.commerce_mapping cm --needed to get to xref
+            ON bmol.commerce_id = cm.commerce_id
+
+            INNER JOIN (SELECT DISTINCT member_id, --grab the member_id so we can link to the doris_log
+                              source_id
+                              FROM member.member_xref 
+                              WHERE upper(trim(source_cd)) = 'PROFILE' 
+                              AND is_user_email_only = 'false' 
+                              AND member_type = 'registered'
+                         ) xref
+            ON lower(cm.buyer_user_id) = lower(xref.source_id)
+
+            INNER JOIN sedwa8.members_doris_itemlevel_log doris    --(full query at end of workbook)
+            ON xref.member_id = doris.member_id --join the doris members to all members that have shown up in bmol. We'll use this to look for overlapping timestamps in DORIS and BMOL
+
+            WHERE TO_DATE(bmol.trans_end_dttm) >= '2018-03-01' --when finalizing: line this up with the "substr(status_date,1,10) >= '2017-03-25'" in sedwa8.members_doris_itemlevel_log
+            AND bmol.RTN_IND <> 1
+            
+            --and doris.member_id in ('007a75d3b2090d27c6a9a64bcdb4f161','0027aa903624d537427b023b9d38ca25')
+
+            GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23
+
+      )
+      WHERE Purchase_After_DORIS_Fl = 1
+      AND str_channel_rollup='NFS'
+      
+      UNION
+      
+      SELECT 
+      'NSO' as Store_Type
+      ,COUNT(DISTINCT BM_Trans_ID) as Txn_Count
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND univ_style_cd = Style THEN BM_TRANS_ID ELSE NULL END) as SameStyle_Exchanges
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND univ_style_cd = Style THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as Exchange_Rate
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND univ_style_cd = Style THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT Return_InStore_Time),3) as Exchange_Rate_D
+      
+        ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'FOOTWEAR' AND UPPER(Division) = 'FOOTWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) FTWforFTW_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'FOOTWEAR' AND UPPER(Division) = 'FOOTWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) =              'FOOTWEAR' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as FTWforFTW_Exchange_Rate
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'FOOTWEAR' AND UPPER(Division) = 'FOOTWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) =              'FOOTWEAR' and DORIS_Demand > 0 THEN Return_InStore_Time ELSE NULL END),3) as FTWforFTW_Exchange_Rate_D
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'APPAREL' AND UPPER(univ_div_desc) = 'APPAREL' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) APPforAPP_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'APPAREL' AND UPPER(univ_div_desc) = 'APPAREL' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) =                    'APPAREL' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as APPforAPP_Exchange_Rate
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'APPAREL' AND UPPER(univ_div_desc) = 'APPAREL' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) =                    'APPAREL' and DORIS_Demand > 0 THEN Return_InStore_Time ELSE NULL END),3) as APPforAPP_Exchange_Rate_D
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'EQUIPMENT' AND UPPER(univ_div_desc) = 'EQUIPMENT' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) EQPforEQP_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'EQUIPMENT' AND UPPER(univ_div_desc) = 'EQUIPMENT' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) =                'EQUIPMENT' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as EQPforEQP_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND UPPER(LOB_Desc) = 'CLEARANCE' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) CLEARforCLEAR_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND UPPER(LOB_Desc) = 'CLEARANCE' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                               UPPER(Line_of_business) = 'CLEARANCE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as CLEARforCLEAR_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND UPPER(LOB_Desc) = 'PROMOTION' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) CLEARforPROMO_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND UPPER(LOB_Desc) = 'PROMOTION' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                               UPPER(Line_of_business) = 'CLEARANCE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as CLEARforPROMO_Exchange_Rate
+
+       ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND (UPPER(LOB_Desc) = 'PROMOTION' OR UPPER(LOB_Desc) = 'CLEARANCE') and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) CLEARforDISCOUNT_Txn_Cnt
+       ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND (UPPER(LOB_Desc) = 'PROMOTION' OR UPPER(LOB_Desc) = 'CLEARANCE')  and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN                             Purchase_After_DORIS_Fl = 1 AND  UPPER(Line_of_business) = 'CLEARANCE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as CLEARforDISCOUNT_Exchange_Rate
+
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' AND UPPER(LOB_Desc) = 'BASE INLINE' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) BASEforBASE_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' AND UPPER(LOB_Desc) = 'BASE INLINE' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                            UPPER(Line_of_business) = 'BASE INLINE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as BASEforBASE_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' AND (UPPER(LOB_Desc) = 'PROMOTION' OR UPPER(LOB_Desc) = 'CLEARANCE') and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) BASEforDISCOUNT_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' AND (UPPER(LOB_Desc) = 'PROMOTION' OR UPPER(LOB_Desc) = 'CLEARANCE') and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN                          Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as BASEforDISCOUNT_Exchange_Rate
+      
+       ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'LAUNCH' AND UPPER(LOB_Desc) = 'LAUNCH' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) LNCHforLNCH_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'LAUNCH' AND UPPER(LOB_Desc) = 'LAUNCH' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                                     UPPER(Line_of_business) = 'LAUNCH' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as LNCHforLNCH_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'SPORTSWEAR' AND UPPER(univ_cat_desc) = 'SPORTSWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) NSWforNSW_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'SPORTSWEAR' AND UPPER(univ_cat_desc) = 'SPORTSWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                                UPPER(Category) = 'SPORTSWEAR' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as NSWforNSW_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'RUNNING' AND UPPER(univ_cat_desc) = 'RUNNING' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) RNGforRNG_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'RUNNING' AND UPPER(univ_cat_desc) = 'RUNNING' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                                      UPPER(Category) = 'RUNNING' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as RNGforRNG_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'BASKETBALL' AND UPPER(univ_cat_desc) = 'BASKETBALL' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) BBALLforBBALL_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'BASKETBALL' AND UPPER(univ_cat_desc) = 'BASKETBALL' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                                UPPER(Category) = 'BASKETBALL' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as BBALLforBBALL_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'GLOBAL FOOTBALL' AND UPPER(univ_cat_desc) = 'GLOBAL FOOTBALL' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) GFBforGFB_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'GLOBAL FOOTBALL' AND UPPER(univ_cat_desc) = 'GLOBAL FOOTBALL' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                      UPPER(Category) = 'GLOBAL FOOTBALL' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as GFBforGFB_Exchange_Rate
+      
+     ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'FOOTWEAR' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_FTW
+       ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'APPAREL' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_APP
+        ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'EQUIPMENT' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_EQP
+        
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(LOB_Desc) = 'BASE INLINE' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_BASE
+       ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(LOB_Desc) = 'CLEARANCE' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_CLEAR
+        ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(LOB_Desc) = 'LAUNCH' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_LNCH
+         ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(LOB_Desc) = 'PROMOTION' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_PROMO
+        
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(univ_cat_desc) = 'SPORTSWEAR' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_NSW
+       ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(univ_cat_desc) = 'BASKETBALL' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_BBALL
+        ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(univ_cat_desc) = 'RUNNING' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_RNG
+         ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(univ_cat_desc) = 'GLOBAL FOOTBALL' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_GFB
+      
+      FROM (
+
+            SELECT DISTINCT bmol.trans_id as BM_Trans_ID,
+            bmol.trans_end_dttm as BM_Transaction_date,
+            bmol.univ_style_cd,
+            bmol.univ_div_desc,
+            bmol.univ_cat_desc,
+            bmol.lob_desc,
+            bmol.str_channel_rollup,
+            doris.Return_InStore_Time,
+            doris.Order_line_key,
+            doris.DORIS_demand,
+            doris.DORIS_units,
+            doris.Style,
+            doris.Gender,
+            doris.Division,
+            doris.Category,
+            doris.Line_of_business,
+            bmol.commerce_id,
+            xref.member_id,
+            doris.member_id,
+            '1' as Doris_fl,
+            ROUND(SUM(bmol.GROSS_AMT_USD),2) as Purchase_After_DORIS_Demand,
+            SUM(bmol.GROSS_UNITS) as Purchase_After_DORIS_Units,
+            CASE WHEN (TO_DATE(bmol.trans_dt) = TO_DATE(doris.Return_InStore_Time) AND (HOUR(bmol.trans_end_dttm) - HOUR(doris.Return_InStore_Time)) <= 2 OR ((DATEDIFF(doris.Return_InStore_Time,bmol.trans_dt) = 1) AND HOUR(doris.Return_InStore_Time) <=8)) THEN 1 ELSE 0 END as Purchase_After_DORIS_Fl
+            /* ^Give me a '1' when there is a bmol non-return transaction on the same day within 2 hours after the DORIS timestamp or before the next day's open time to account for the DOMS timestamp lag that appears to be consistently a few hours behind (evidenced by timestamps coming in after hours, i.e. 1am */ 
+
+            FROM dtc_integrated.DTC_BM_ORDER_LINE bmol
+
+            INNER JOIN dtc_reference.commerce_mapping cm --needed to get to xref
+            ON bmol.commerce_id = cm.commerce_id
+
+            INNER JOIN (SELECT DISTINCT member_id, --grab the member_id so we can link to the doris_log
+                              source_id
+                              FROM member.member_xref 
+                              WHERE upper(trim(source_cd)) = 'PROFILE' 
+                              AND is_user_email_only = 'false' 
+                              AND member_type = 'registered'
+                         ) xref
+            ON lower(cm.buyer_user_id) = lower(xref.source_id)
+
+            INNER JOIN sedwa8.members_doris_itemlevel_log doris    --(full query at end of workbook)
+            ON xref.member_id = doris.member_id --join the doris members to all members that have shown up in bmol. We'll use this to look for overlapping timestamps in DORIS and BMOL
+
+            WHERE TO_DATE(bmol.trans_end_dttm) >= '2018-03-01' --when finalizing: line this up with the "substr(status_date,1,10) >= '2017-03-25'" in sedwa8.members_doris_itemlevel_log
+            AND bmol.RTN_IND <> 1
+            
+            --and doris.member_id in ('007a75d3b2090d27c6a9a64bcdb4f161','0027aa903624d537427b023b9d38ca25')
+
+            GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23
+
+      )
+      WHERE Purchase_After_DORIS_Fl = 1
+      AND str_channel_rollup='NSO'
+
+      
+      UNION
+      
+      SELECT 
+      'BOTH' as Store_Type
+      ,COUNT(DISTINCT BM_Trans_ID) as Txn_Count
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND univ_style_cd = Style THEN BM_TRANS_ID ELSE NULL END) as SameStyle_Exchanges
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND univ_style_cd = Style THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as Exchange_Rate
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND univ_style_cd = Style THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT Return_InStore_Time),3) as Exchange_Rate_D
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'FOOTWEAR' AND UPPER(Division) = 'FOOTWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) FTWforFTW_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'FOOTWEAR' AND UPPER(Division) = 'FOOTWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) =              'FOOTWEAR' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as FTWforFTW_Exchange_Rate
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'FOOTWEAR' AND UPPER(Division) = 'FOOTWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) =              'FOOTWEAR' and DORIS_Demand > 0 THEN Return_InStore_Time ELSE NULL END),3) as FTWforFTW_Exchange_Rate_D
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'APPAREL' AND UPPER(univ_div_desc) = 'APPAREL' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) APPforAPP_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'APPAREL' AND UPPER(univ_div_desc) = 'APPAREL' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) =                    'APPAREL' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as APPforAPP_Exchange_Rate
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'APPAREL' AND UPPER(univ_div_desc) = 'APPAREL' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) =                    'APPAREL' and DORIS_Demand > 0 THEN Return_InStore_Time ELSE NULL END),3) as APPforAPP_Exchange_Rate_D
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'EQUIPMENT' AND UPPER(univ_div_desc) = 'EQUIPMENT' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) EQPforEQP_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) = 'EQUIPMENT' AND UPPER(univ_div_desc) = 'EQUIPMENT' AND DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Division) =                'EQUIPMENT' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as EQPforEQP_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND UPPER(LOB_Desc) = 'CLEARANCE' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) CLEARforCLEAR_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND UPPER(LOB_Desc) = 'CLEARANCE' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                               UPPER(Line_of_business) = 'CLEARANCE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as CLEARforCLEAR_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND UPPER(LOB_Desc) = 'PROMOTION' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) CLEARforPROMO_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND UPPER(LOB_Desc) = 'PROMOTION' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                               UPPER(Line_of_business) = 'CLEARANCE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as CLEARforPROMO_Exchange_Rate
+
+       ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND (UPPER(LOB_Desc) = 'PROMOTION' OR UPPER(LOB_Desc) = 'CLEARANCE') and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) CLEARforDISCOUNT_Txn_Cnt
+       ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'CLEARANCE' AND (UPPER(LOB_Desc) = 'PROMOTION' OR UPPER(LOB_Desc) = 'CLEARANCE')  and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN                             Purchase_After_DORIS_Fl = 1 AND  UPPER(Line_of_business) = 'CLEARANCE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as CLEARforDISCOUNT_Exchange_Rate
+
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' AND UPPER(LOB_Desc) = 'BASE INLINE' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) BASEforBASE_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' AND UPPER(LOB_Desc) = 'BASE INLINE' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                            UPPER(Line_of_business) = 'BASE INLINE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as BASEforBASE_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' AND (UPPER(LOB_Desc) = 'PROMOTION' OR UPPER(LOB_Desc) = 'CLEARANCE') and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) BASEforDISCOUNT_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' AND (UPPER(LOB_Desc) = 'PROMOTION' OR UPPER(LOB_Desc) = 'CLEARANCE') and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN                          Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'BASE INLINE' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as BASEforDISCOUNT_Exchange_Rate
+      
+       ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'LAUNCH' AND UPPER(LOB_Desc) = 'LAUNCH' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) LNCHforLNCH_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Line_of_business) = 'LAUNCH' AND UPPER(LOB_Desc) = 'LAUNCH' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                                     UPPER(Line_of_business) = 'LAUNCH' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as LNCHforLNCH_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'SPORTSWEAR' AND UPPER(univ_cat_desc) = 'SPORTSWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) NSWforNSW_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'SPORTSWEAR' AND UPPER(univ_cat_desc) = 'SPORTSWEAR' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                                UPPER(Category) = 'SPORTSWEAR' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as NSWforNSW_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'RUNNING' AND UPPER(univ_cat_desc) = 'RUNNING' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) RNGforRNG_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'RUNNING' AND UPPER(univ_cat_desc) = 'RUNNING' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                                      UPPER(Category) = 'RUNNING' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as RNGforRNG_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'BASKETBALL' AND UPPER(univ_cat_desc) = 'BASKETBALL' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) BBALLforBBALL_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'BASKETBALL' AND UPPER(univ_cat_desc) = 'BASKETBALL' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                                UPPER(Category) = 'BASKETBALL' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as BBALLforBBALL_Exchange_Rate
+      
+      ,COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'GLOBAL FOOTBALL' AND UPPER(univ_cat_desc) = 'GLOBAL FOOTBALL' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) GFBforGFB_Txn_Cnt
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(Category) = 'GLOBAL FOOTBALL' AND UPPER(univ_cat_desc) = 'GLOBAL FOOTBALL' and DORIS_Demand > 0 AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND                      UPPER(Category) = 'GLOBAL FOOTBALL' and DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END),3) as GFBforGFB_Exchange_Rate
+      
+     ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'FOOTWEAR' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_FTW
+       ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'APPAREL' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_APP
+        ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND UPPER(univ_div_desc) = 'EQUIPMENT' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_EQP
+        
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(LOB_Desc) = 'BASE INLINE' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_BASE
+       ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(LOB_Desc) = 'CLEARANCE' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_CLEAR
+        ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(LOB_Desc) = 'LAUNCH' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_LNCH
+         ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(LOB_Desc) = 'PROMOTION' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_PROMO
+        
+      ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(univ_cat_desc) = 'SPORTSWEAR' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_NSW
+       ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(univ_cat_desc) = 'BASKETBALL' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_BBALL
+        ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(univ_cat_desc) = 'RUNNING' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_RNG
+         ,ROUND(COUNT(DISTINCT CASE WHEN Purchase_After_DORIS_Fl = 1 AND  UPPER(univ_cat_desc) = 'GLOBAL FOOTBALL' AND Purchase_After_DORIS_Demand > 0 THEN BM_TRANS_ID ELSE NULL END) / COUNT(DISTINCT BM_Trans_ID),3) as PCT_OF_PURCH_GFB
+      
+      FROM (
+
+            SELECT DISTINCT bmol.trans_id as BM_Trans_ID,
+            bmol.trans_end_dttm as BM_Transaction_date,
+            bmol.univ_style_cd,
+            bmol.univ_div_desc,
+            bmol.univ_cat_desc,
+            bmol.lob_desc,
+            bmol.str_channel_rollup,
+            doris.Return_InStore_Time,
+            doris.Order_line_key,
+            doris.DORIS_demand,
+            doris.DORIS_units,
+            doris.Style,
+            doris.Gender,
+            doris.Division,
+            doris.Category,
+            doris.Line_of_business,
+            bmol.commerce_id,
+            xref.member_id,
+            doris.member_id,
+            '1' as Doris_fl,
+            ROUND(SUM(bmol.GROSS_AMT_USD),2) as Purchase_After_DORIS_Demand,
+            SUM(bmol.GROSS_UNITS) as Purchase_After_DORIS_Units,
+            CASE WHEN (TO_DATE(bmol.trans_dt) = TO_DATE(doris.Return_InStore_Time) AND (HOUR(bmol.trans_end_dttm) - HOUR(doris.Return_InStore_Time)) <= 2 OR ((DATEDIFF(doris.Return_InStore_Time,bmol.trans_dt) = 1) AND HOUR(doris.Return_InStore_Time) <=8)) THEN 1 ELSE 0 END as Purchase_After_DORIS_Fl
+            /* ^Give me a '1' when there is a bmol non-return transaction on the same day within 2 hours after the DORIS timestamp or before the next day's open time to account for the DOMS timestamp lag that appears to be consistently a few hours behind (evidenced by timestamps coming in after hours, i.e. 1am */ 
+
+            FROM dtc_integrated.DTC_BM_ORDER_LINE bmol
+
+            INNER JOIN dtc_reference.commerce_mapping cm --needed to get to xref
+            ON bmol.commerce_id = cm.commerce_id
+
+            INNER JOIN (SELECT DISTINCT member_id, --grab the member_id so we can link to the doris_log
+                              source_id
+                              FROM member.member_xref 
+                              WHERE upper(trim(source_cd)) = 'PROFILE' 
+                              AND is_user_email_only = 'false' 
+                              AND member_type = 'registered'
+                         ) xref
+            ON lower(cm.buyer_user_id) = lower(xref.source_id)
+
+            INNER JOIN sedwa8.members_doris_itemlevel_log doris    --(full query at end of workbook)
+            ON xref.member_id = doris.member_id --join the doris members to all members that have shown up in bmol. We'll use this to look for overlapping timestamps in DORIS and BMOL
+
+            WHERE TO_DATE(bmol.trans_end_dttm) >= '2018-03-01' --when finalizing: line this up with the "substr(status_date,1,10) >= '2017-03-25'" in sedwa8.members_doris_itemlevel_log
+            AND bmol.RTN_IND <> 1
+            
+            --and doris.member_id in ('007a75d3b2090d27c6a9a64bcdb4f161','0027aa903624d537427b023b9d38ca25')
+
+            GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23
+
+      )
+      WHERE Purchase_After_DORIS_Fl = 1
+      --AND str_channel_rollup='NSO'
